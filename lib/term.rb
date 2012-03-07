@@ -1,8 +1,2 @@
-module Term
-  
-  class Terminal
-    def initialize(options = {})
-    end
-  end
-
-end
+require 'term/terminal.rb'
+require 'term/ansi.rb'
