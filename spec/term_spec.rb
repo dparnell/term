@@ -84,6 +84,17 @@ describe Term do
       term.to_s.strip.should == 'ABCDEF1'
     end
 
+    it 'must drag the text back on a line in response to a backspace without affecting the text on the next line' do
+      term = Term::Terminal.new
+      term.accept("ABCDEFG\r\n12345")
+      
+      term.cursor_x = 3
+      term.cursor_y = 0
+      term.accept("\b")
+      term.line(0).strip.should == 'ABDEFG'
+      term.cursor_x.should == 2
+    end
+
     it 'must handle the carriage return' do
       term = Term::Terminal.new
       term.accept('ABCDEFG')
@@ -106,6 +117,17 @@ describe Term do
       term.to_s.strip.should == 'ABCDEFG'
     end
     
+    it 'must handle the delete character' do
+      term = Term::Terminal.new
+      term.accept("ABCDEFG\r\n12345")
+      
+      term.cursor_x = 3
+      term.cursor_y = 0
+      term.accept("\177")
+      term.line(0).strip.should == 'ABCEFG'
+      term.cursor_x.should == 3
+    end
+
   end # control characters
 
 end

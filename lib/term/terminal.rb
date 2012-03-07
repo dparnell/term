@@ -48,9 +48,17 @@ module Term
 
     def backspace
       @cursor_x = @cursor_x - 1
+      if @cursor_x < 0
+        @cursor_x == 0
+      end
       pos = @cursor_x+@width*@cursor_y
-      @characters[pos] = 32
-      @dirty[pos] = true      
+      eol_pos = @width*@cursor_y + @width - 1
+      @characters.slice!(pos)
+      @characters.insert(eol_pos, 32)
+
+      (pos..eol_pos).each do |i|
+        @dirty[i] = true
+      end
     end
 
     def carriage_return
@@ -71,6 +79,17 @@ module Term
       end
     end
 
+    def delete
+      pos = @cursor_x+@width*@cursor_y
+      eol_pos = @width*@cursor_y + @width - 1
+      @characters.slice!(pos)
+      @characters.insert(eol_pos, 32)
+
+      (pos..eol_pos).each do |i|
+        @dirty[i] = true
+      end
+    end
+
     def accept(s)
       s.each_byte do |b|
         @machine.handle(b)
@@ -82,11 +101,13 @@ module Term
     end
 
 
+    def line(y)
+      @characters.slice(y*@width, @width).pack('c*')
+    end
+
     def to_s
       (1..@height).collect do |y|
-        row = @characters.slice((y-1)*@width, @width)
-
-        row.pack('c*')
+        line(y-1)
       end.join("\n")
     end
 

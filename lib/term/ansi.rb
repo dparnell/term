@@ -17,6 +17,8 @@ module Term
           @terminal.line_feed
         when 13
           @terminal.carriage_return
+        when 127
+          @terminal.delete
         else
           @terminal.put_byte(byte)
         end
