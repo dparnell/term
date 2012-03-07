@@ -130,4 +130,21 @@ describe Term do
 
   end # control characters
 
+  describe "Escape sequences" do
+    
+    it 'must handle the clear screen escape sequence' do
+      term = Term::Terminal.new
+      term.accept("ABCDEFG\r\n12345\r\n")
+
+      term.cursor_x.should == 0
+      term.cursor_y.should == 2
+
+      term.accept("\033[2J")
+      term.cursor_x.should == 0
+      term.cursor_y.should == 0
+      term.to_s.strip.should == ''
+    end
+
+  end # escape sequences
+
 end
