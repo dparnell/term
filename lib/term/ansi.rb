@@ -29,6 +29,7 @@ module Term
         case byte
         when 91 # [
           @state = :csi
+          @csi = []
         else
           @state = :ground
           handle(byte)
@@ -36,22 +37,21 @@ module Term
    
       when :csi
         case byte
-        when 50 # 2
-          @state = :clear_1
-        else
-          @state = :ground
-          handle(byte)
-        end
+        when 48,49,50,51,52,53,54,55,56,57,58,59
+          @csi << byte
 
-      when :clear_1
-        if byte == 74 # J
-          @terminal.clear
-          @terminal.cursor_x = 0
-          @terminal.cursor_y = 0
-          @state = :ground
         else
+          csi = @csi.pack('c*').split(';').map{|p| p.to_i}
+
+          case byte
+          when 74 # J
+            if csi[0] == 2
+              @terminal.clear
+              @terminal.cursor_x = 0
+              @terminal.cursor_y = 0
+            end
+          end
           @state = :ground
-          handle(byte)
         end
       end
     end
