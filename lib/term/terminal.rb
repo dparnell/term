@@ -93,12 +93,16 @@ module Term
       
       if @cursor_y == @height
         @cursor_y = @height - 1
-        @characters.slice!(0, @width)
-        @characters = @characters + ([32]*@width)
-        # the whole screen is now dirty
-        (0..@width*@height-1).each do |i|
-          @dirty[i] = true
-        end
+        scroll_up(1)
+      end
+    end
+
+    def scroll_up(rows)
+      @characters.slice!(0, @width*rows)
+      @characters = @characters + ([32]*(@width*rows))
+      # the whole screen is now dirty
+      (0..@width*@height-1).each do |i|
+        @dirty[i] = true
       end
     end
 
@@ -151,14 +155,18 @@ module Term
       @characters[x + y*@width].to_i
     end
 
+    def lines
+      (1..@height).collect do |y|
+        line(y-1)
+      end
+    end
+
     def line(y)
       @characters.slice(y*@width, @width).pack('c*')
     end
 
     def to_s
-      (1..@height).collect do |y|
-        line(y-1)
-      end.join("\n")
+      lines.join("\n")
     end
 
   end

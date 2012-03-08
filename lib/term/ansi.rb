@@ -83,6 +83,8 @@ module Term
             when 2
               @terminal.clear(:line)
             end
+          when 83 # S
+            @terminal.scroll_up(csi[0] || 1)
           end
           @state = :ground
         end

@@ -287,6 +287,19 @@ describe Term do
       term.to_s.strip.should == '12345'
     end
 
+    it 'must handle the scroll up escape sequence' do
+      term = Term::Terminal.new
+      term.accept("ABCDEF\r\n123456\r\nFOOBAR\r\n")
+      
+      term.cursor_x.should == 0
+      term.cursor_y.should == 3
+      term.to_s.gsub(/\s/,'').should == 'ABCDEF123456FOOBAR'
+      term.accept("\033[S")
+      term.to_s.gsub(/\s/,'').should == '123456FOOBAR'
+      term.cursor_x.should == 0
+      term.cursor_y.should == 3
+    end
+
   end # escape sequences
 
 end
