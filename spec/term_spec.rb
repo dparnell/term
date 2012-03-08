@@ -227,6 +227,42 @@ describe Term do
       term.cursor_y.should == 3
     end
 
+    it 'must handle the cursor horizontal absolute' do
+      term = Term::Terminal.new
+      term.accept("\033[10;15H")
+      term.cursor_x.should == 14
+      term.cursor_y.should == 9
+      term.accept("\033[27G")
+      term.cursor_x.should == 26
+      term.cursor_y.should == 9
+      term.accept("\033[G")
+      term.cursor_x.should == 0
+      term.cursor_y.should == 9
+    end
+
+    it 'must handle the clear screen escape sequences' do
+      term = Term::Terminal.new
+      term.accept("ABCDEFG\r\n12345\r\n")
+
+      term.cursor_x.should == 0
+      term.cursor_y.should == 2
+
+      term.cursor_y = 0
+      term.cursor_x = 10
+
+      term.accept("\033[J")
+      term.cursor_x.should == 10
+      term.cursor_y.should == 0
+      term.to_s.strip.should == 'ABCDEFG'
+
+      term.cursor_x = 3
+      term.accept("\033[1J")
+      term.cursor_x.should == 3
+      term.cursor_y.should == 0
+      term.to_s.strip.should == 'EFG'
+    end
+
+
   end # escape sequences
 
 end

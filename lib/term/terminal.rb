@@ -12,6 +12,7 @@ module Term
       @cursor_y = 0
 
       @dirty = {}
+      @characters = []
       clear
       @dirty = {}
 
@@ -19,11 +20,22 @@ module Term
       @machine = klass.new(self)
     end
 
-    def clear
-      @characters = (0..(@width*@height-1)).collect do |i| 
-        @dirty[i] = true
+    def clear(range = :all)
+      case range
+      when :to_end
+        start = @cursor_x + @cursor_y * @width
+        finish = @width*@height-1
+      when :to_start
+        start = 0
+        finish = @cursor_x + @cursor_y * @width
+      else
+        start = 0
+        finish = @width*@height-1
+      end
 
-        32 
+      (start..finish).each do |i| 
+        @dirty[i] = true
+        @characters[i] = 32 
       end
     end
 

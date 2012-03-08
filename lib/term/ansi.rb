@@ -58,11 +58,18 @@ module Term
           when 70 # F
             @terminal.cursor_up(csi[0] || 1)
             @terminal.cursor_x = 0
+          when 71 # G
+            @terminal.cursor_x = (csi[0] || 1) - 1
           when 72, 102 # H or f
             @terminal.cursor_x = (csi[1] || 1) - 1
             @terminal.cursor_y = (csi[0] || 1) - 1
           when 74 # J
-            if csi[0] == 2
+            case csi[0].to_i
+            when 0 # clear to the end of the screen
+              @terminal.clear(:to_end)
+            when 1 # clear to the start of the screen
+              @terminal.clear(:to_start)
+            when 2
               @terminal.clear
               @terminal.cursor_x = 0
               @terminal.cursor_y = 0
