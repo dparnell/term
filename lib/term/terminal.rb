@@ -90,6 +90,34 @@ module Term
       end
     end
 
+    def cursor_up(lines)
+      @cursor_y = @cursor_y - lines
+      if @cursor_y < 0
+        @cursor_y = 0
+      end
+    end
+
+    def cursor_down(lines)
+      @cursor_y = @cursor_y + lines
+      if @cursor_y >= @height
+        @cursor_y = @height - 1
+      end
+    end
+
+    def cursor_forward(cols)
+      @cursor_x = @cursor_x + cols
+      if @cursor_x >= @width
+        @cursor_x = @width - 1
+      end
+    end
+
+    def cursor_backward(cols)
+      @cursor_x = @cursor_x - cols
+      if @cursor_x < 0
+        @cursor_x = 0
+      end
+    end
+
     def accept(s)
       s.each_byte do |b|
         @machine.handle(b)
@@ -99,7 +127,6 @@ module Term
     def character_at(x,y)
       @characters[x + y*@width].to_i
     end
-
 
     def line(y)
       @characters.slice(y*@width, @width).pack('c*')

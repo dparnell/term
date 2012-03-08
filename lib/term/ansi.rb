@@ -44,6 +44,17 @@ module Term
           csi = @csi.pack('c*').split(';').map{|p| p.to_i}
 
           case byte
+          when 65 # A
+            @terminal.cursor_up(csi[0].to_i)
+          when 66 # B
+            @terminal.cursor_down(csi[0].to_i)
+          when 67 # C
+            @terminal.cursor_forward(csi[0].to_i)
+          when 68 # D
+            @terminal.cursor_backward(csi[0].to_i)
+          when 72, 102 # H or f
+            @terminal.cursor_x = csi[1].to_i
+            @terminal.cursor_y = csi[0].to_i
           when 74 # J
             if csi[0] == 2
               @terminal.clear
