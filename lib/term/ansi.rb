@@ -74,6 +74,15 @@ module Term
               @terminal.cursor_x = 0
               @terminal.cursor_y = 0
             end
+          when 75 # K
+            case csi[0].to_i
+            when 0 # clear to the end of the line
+              @terminal.clear(:to_end_of_line)
+            when 1 # clear to the start of the line
+              @terminal.clear(:to_start_of_line)
+            when 2
+              @terminal.clear(:line)
+            end
           end
           @state = :ground
         end

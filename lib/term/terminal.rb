@@ -28,9 +28,20 @@ module Term
       when :to_start
         start = 0
         finish = @cursor_x + @cursor_y * @width
-      else
-        start = 0
+      when :all
+        start = 0 
         finish = @width*@height-1
+      when :to_start_of_line
+        start = @cursor_y * @width
+        finish = start + @cursor_x
+      when :to_end_of_line
+        start = @cursor_y * @width + @cursor_x
+        finish = @cursor_y * @width + @width - 1
+      when :line
+        start = @cursor_y * @width
+        finish = start + @width - 1
+      else
+        raise "Unknown clear #{range.inspect}"
       end
 
       (start..finish).each do |i| 

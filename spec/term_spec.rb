@@ -262,6 +262,30 @@ describe Term do
       term.to_s.strip.should == 'EFG'
     end
 
+    it 'must handle the erase in line escape sequences' do
+      term = Term::Terminal.new
+      term.accept("ABCDEFGHIJKLMNOP\r\n12345")
+      term.cursor_x = 10
+      term.cursor_y = 0
+
+      term.accept("\033[K")
+      term.cursor_x.should == 10
+      term.cursor_y.should == 0
+      term.line(0).strip.should == 'ABCDEFGHIJ'
+      term.line(1).strip.should == '12345'
+
+      term.cursor_x = 3
+      term.accept("\033[1K")
+      term.cursor_x.should == 3
+      term.cursor_y.should == 0
+      term.line(0).strip.should == 'EFGHIJ'
+      term.line(1).strip.should == '12345'
+
+      term.accept("\033[2K")
+      term.cursor_x.should == 3
+      term.cursor_y.should == 0
+      term.to_s.strip.should == '12345'
+    end
 
   end # escape sequences
 
