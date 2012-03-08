@@ -85,6 +85,8 @@ module Term
             end
           when 83 # S
             @terminal.scroll_up(csi[0] || 1)
+          when 84 # T
+            @terminal.scroll_down(csi[0] || 1)
           end
           @state = :ground
         end

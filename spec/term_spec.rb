@@ -298,7 +298,29 @@ describe Term do
       term.to_s.gsub(/\s/,'').should == '123456FOOBAR'
       term.cursor_x.should == 0
       term.cursor_y.should == 3
+      term.accept("\033[5S")
+      term.to_s.strip.should == ''
     end
+
+    it 'must handle the scroll down escape sequence' do
+      term = Term::Terminal.new
+      term.accept("ABCDEF\r\n123456\r\nFOOBAR\r\n")
+      
+      term.cursor_x.should == 0
+      term.cursor_y.should == 3
+      term.to_s.gsub(/\s/,'').should == 'ABCDEF123456FOOBAR'
+      term.accept("\033[T")
+      term.to_s.gsub(/\s/,'').should == 'ABCDEF123456FOOBAR'
+      term.cursor_x.should == 0
+      term.cursor_y.should == 3
+      term.line(0).strip.should == ''
+      term.accept("\033[5T")
+      term.to_s.gsub(/\s/,'').should == 'ABCDEF123456FOOBAR'
+      term.line(6).strip.should == 'ABCDEF'
+      term.accept("\033[50T")
+      term.to_s.strip.should == ''
+    end
+    
 
   end # escape sequences
 

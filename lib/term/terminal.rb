@@ -98,11 +98,23 @@ module Term
     end
 
     def scroll_up(rows)
-      @characters.slice!(0, @width*rows)
-      @characters = @characters + ([32]*(@width*rows))
-      # the whole screen is now dirty
-      (0..@width*@height-1).each do |i|
-        @dirty[i] = true
+      if rows < @height
+        @characters.slice!(0, @width*rows)
+        @characters = @characters + ([32]*(@width*rows))
+        # the whole screen is now dirty
+        (0..@width*@height-1).each do |i|
+          @dirty[i] = true
+        end
+      else
+        clear
+      end
+    end
+
+    def scroll_down(rows)
+      if rows < @height
+        @characters = ([32]*(@width*rows) + @characters).slice(0, @width*@height)
+      else
+        clear
       end
     end
 
