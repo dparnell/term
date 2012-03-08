@@ -148,21 +148,21 @@ describe Term do
     it 'must handle the set cursor position escape sequences' do
       term = Term::Terminal.new
       term.accept("\033[10;15H")
-      term.cursor_x.should == 15
-      term.cursor_y.should == 10
+      term.cursor_x.should == 14
+      term.cursor_y.should == 9
       term.accept("\033[3;7f")
-      term.cursor_x.should == 7
-      term.cursor_y.should == 3
+      term.cursor_x.should == 6
+      term.cursor_y.should == 2
     end
 
     it 'must handle the cursor up sequence' do
       term = Term::Terminal.new
       term.accept("\033[10;15H")
-      term.cursor_x.should == 15
-      term.cursor_y.should == 10
+      term.cursor_x.should == 14
+      term.cursor_y.should == 9
       term.accept("\033[5A")
-      term.cursor_x.should == 15
-      term.cursor_y.should == 5
+      term.cursor_x.should == 14
+      term.cursor_y.should == 4
       term.accept("\033[10A")
       term.cursor_y.should == 0
     end
@@ -170,11 +170,11 @@ describe Term do
     it 'must handle the cursor down sequence' do
       term = Term::Terminal.new
       term.accept("\033[10;15H")
-      term.cursor_x.should == 15
-      term.cursor_y.should == 10
+      term.cursor_x.should == 14
+      term.cursor_y.should == 9
       term.accept("\033[5B")
-      term.cursor_x.should == 15
-      term.cursor_y.should == 15
+      term.cursor_x.should == 14
+      term.cursor_y.should == 14
       term.accept("\033[20B")
       term.cursor_y.should == 24
     end
@@ -182,11 +182,11 @@ describe Term do
     it 'must handle the cursor right sequence' do
       term = Term::Terminal.new
       term.accept("\033[10;15H")
-      term.cursor_x.should == 15
-      term.cursor_y.should == 10
+      term.cursor_x.should == 14
+      term.cursor_y.should == 9
       term.accept("\033[5C")
-      term.cursor_x.should == 20
-      term.cursor_y.should == 10
+      term.cursor_x.should == 19
+      term.cursor_y.should == 9
       term.accept("\033[80C")
       term.cursor_x.should == 79
     end
@@ -194,13 +194,37 @@ describe Term do
     it 'must handle the cursor left sequence' do
       term = Term::Terminal.new
       term.accept("\033[10;15H")
-      term.cursor_x.should == 15
-      term.cursor_y.should == 10
+      term.cursor_x.should == 14
+      term.cursor_y.should == 9
       term.accept("\033[5D")
-      term.cursor_x.should == 10
-      term.cursor_y.should == 10
+      term.cursor_x.should == 9
+      term.cursor_y.should == 9
       term.accept("\033[80D")
       term.cursor_x.should == 0
+    end
+
+    it 'must handle the cursor next line sequence' do
+      term = Term::Terminal.new
+      term.accept("\033[10;15H")
+      term.cursor_x.should == 14
+      term.cursor_y.should == 9
+      term.accept("\033[5E")
+      term.cursor_x.should == 0
+      term.cursor_y.should == 14
+      term.accept("\033[E")
+      term.cursor_y.should == 15
+    end
+
+    it 'must handle the cursor previous line sequence' do
+      term = Term::Terminal.new
+      term.accept("\033[10;15H")
+      term.cursor_x.should == 14
+      term.cursor_y.should == 9
+      term.accept("\033[5F")
+      term.cursor_x.should == 0
+      term.cursor_y.should == 4
+      term.accept("\033[F")
+      term.cursor_y.should == 3
     end
 
   end # escape sequences

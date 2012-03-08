@@ -45,16 +45,22 @@ module Term
 
           case byte
           when 65 # A
-            @terminal.cursor_up(csi[0].to_i)
+            @terminal.cursor_up(csi[0] || 1)
           when 66 # B
-            @terminal.cursor_down(csi[0].to_i)
+            @terminal.cursor_down(csi[0] || 1)
           when 67 # C
-            @terminal.cursor_forward(csi[0].to_i)
+            @terminal.cursor_forward(csi[0] || 1)
           when 68 # D
-            @terminal.cursor_backward(csi[0].to_i)
+            @terminal.cursor_backward(csi[0] || 1)
+          when 69 # E
+            @terminal.cursor_down(csi[0] || 1)
+            @terminal.cursor_x = 0
+          when 70 # F
+            @terminal.cursor_up(csi[0] || 1)
+            @terminal.cursor_x = 0
           when 72, 102 # H or f
-            @terminal.cursor_x = csi[1].to_i
-            @terminal.cursor_y = csi[0].to_i
+            @terminal.cursor_x = (csi[1] || 1) - 1
+            @terminal.cursor_y = (csi[0] || 1) - 1
           when 74 # J
             if csi[0] == 2
               @terminal.clear
