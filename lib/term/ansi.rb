@@ -37,7 +37,7 @@ module Term
    
       when :csi
         case byte
-        when 48,49,50,51,52,53,54,55,56,57,58,59
+        when 48,49,50,51,52,53,54,55,56,57,58,59,63
           @csi << byte
 
         else
@@ -83,6 +83,12 @@ module Term
             when 2
               @terminal.clear(:line)
             end
+          when 76 # L
+            @terminal.insert_lines(csi[0] || 1)
+            @terminal.cursor_x = 0
+          when 77 # M
+            @terminal.delete_lines(csi[0] || 1)
+            @terminal.cursor_x = 0
           when 83 # S
             @terminal.scroll_up(csi[0] || 1)
           when 84 # T

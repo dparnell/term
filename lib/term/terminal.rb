@@ -129,6 +129,27 @@ module Term
       end
     end
 
+    def delete_lines(lines)
+      start_pos = @cursor_y*@width
+      end_pos = (@cursor_y+lines)*@width - 1
+      @characters.slice!(start_pos..end_pos)
+      @characters = @characters + ([32]*(end_pos-start_pos))
+
+      (start_pos..(@width*@height-1)).each do |i|
+         @dirty[i] = true
+       end
+    end
+
+    def insert_lines(lines)
+      start_pos = @cursor_y*@width
+      end_pos = (@cursor_y+lines)*@width
+      @characters = @characters[0..(start_pos-1)] + [32]*(lines*@width) + @characters[start_pos..(@width*@height-1)]
+
+      (start_pos..(@width*@height-1)).each do |i|
+        @dirty[i] = true
+      end
+    end
+
     def cursor_up(lines)
       @cursor_y = @cursor_y - lines
       if @cursor_y < 0
